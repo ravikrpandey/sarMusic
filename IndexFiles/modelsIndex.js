@@ -23,7 +23,7 @@ db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
 
-
+db.tbl_loginUser = require("../APIs/Login/model.js")(sequelize, Sequelize);
 
 
 

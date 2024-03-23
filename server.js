@@ -66,7 +66,7 @@ app.use(express.static("public"));
 //================= Router ==================//
 
 
-// require("./APIs/Login/route")(app);
+require("./APIs/Login/route")(app);
 
 
 //================== Server ==================//
