@@ -5,24 +5,28 @@ exports.loginUser = async (req, res) => {
     try {
         const { mobile_number, otp } = req.body;
 
-        const userData = await tbl_loginUser.findOne({
+        let userData = await tbl_loginUser.findOne({
             where: {
                 mobile_number: mobile_number
             }
         });
-        if (!userData && mobile_number == userData?.mobile_number) {
-            await tbl_loginUser.update(req.body, {
+        if (userData && mobile_number == userData?.mobile_number) {
+            await tbl_loginUser.update({mobile_number, otp: "1234"}, {
                 where: {
-                    mobile_number: mobile_number,
-                    otp: otp
+                    mobile_number: mobile_number
                 }
             })
         } else {
             await tbl_loginUser.create({
                 mobile_number,
-                otp,
+                otp: "1234"
             });
         }
+        userData = await tbl_loginUser.findOne({
+            where: {
+                mobile_number: mobile_number
+            }
+        });
         if (otp == userData?.otp) {
             return res.status(200).send({ code: 200, message: "user login succesfully" });
         } else {
