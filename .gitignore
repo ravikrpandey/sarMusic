@@ -1,0 +1,14 @@
+# Node.js specific
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Dependency directories
+/node_modules
+
+# Optional npm cache directory
+.npm
+
+# OS-specific files
+.DS_Store
+Thumbs.db
