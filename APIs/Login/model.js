@@ -1,15 +1,24 @@
 module.exports = (sequelize, Sequelize) => {
-  const tbl_loginUser = sequelize.define('tbl_loginUser', {
-    login_id: {
+  const tbl_loginUser = sequelize.define('user', {
+    userId: {
       type: Sequelize.INTEGER,
       autoIncrement: true,
       primaryKey: true
     },
-    mobile_number: {
+    mobileNumber: {
       type: Sequelize.STRING,
       unique: true
     },
+    userName: {
+      type: Sequelize.STRING
+    },
     otp: {
+      type: Sequelize.STRING
+    },
+    lastLogin: {
+      type: Sequelize.STRING
+    },
+    type: {
       type: Sequelize.STRING
     }
   });

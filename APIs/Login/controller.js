@@ -1,33 +1,35 @@
 const db = require("../../IndexFiles/modelsIndex");
-const tbl_loginUser = db.tbl_loginUser;
+const tbl_loginUser = db.user;
 
 exports.loginUser = async (req, res) => {
     try {
-        const { mobile_number, otp } = req.body;
+        const { mobileNumber, otp } = req.body;
 
         let userData = await tbl_loginUser.findOne({
             where: {
-                mobile_number: mobile_number
+                mobileNumber: mobileNumber
             }
         });
-        if (userData && mobile_number == userData?.mobile_number) {
-            await tbl_loginUser.update({mobile_number, otp: "1234"}, {
+        if (userData && mobileNumber == userData?.mobileNumber) {
+            await tbl_loginUser.update({mobileNumber, otp: "1234"}, {
                 where: {
-                    mobile_number: mobile_number
+                    mobileNumber: mobileNumber
                 }
             })
         } else {
             await tbl_loginUser.create({
-                mobile_number,
+                mobileNumber,
                 otp: "1234"
             });
         }
         userData = await tbl_loginUser.findOne({
             where: {
-                mobile_number: mobile_number
+                mobileNumber: mobileNumber
             }
         });
         if (otp == userData?.otp) {
+            await db.sequelize.query(`UPDATE Users SET lastLogin = CURRENT_TIMESTAMP WHERE mobileNumber = '${mobileNumber}';
+            `)
             return res.status(200).send({ code: 200, message: "user login succesfully" });
         } else {
             return res.status(403).send({ code: 403, message: "please enter valid otp" });

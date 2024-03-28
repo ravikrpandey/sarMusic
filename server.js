@@ -66,6 +66,7 @@ app.use(express.static("public"));
 //================= Router ==================//
 
 
+require("./APIs/Artist/route")(app);
 require("./APIs/Login/route")(app);
 
 
