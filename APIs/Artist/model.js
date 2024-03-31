@@ -11,8 +11,18 @@ module.exports = (sequelize, Sequelize) => {
       bio: {
         type: Sequelize.STRING
       },
+      gender: {
+        type: Sequelize.STRING
+      },
+      artistProfileUrl: {
+        type: Sequelize.STRING
+      },
       country: {
         type: Sequelize.STRING
+      },
+      isDeleted: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
       }
     });
     return artist;

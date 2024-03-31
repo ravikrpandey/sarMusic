@@ -3,9 +3,9 @@ const tbl_artist = db.artist;
 
 exports.createArtist = async (req, res) => {
     try {
-        const { artistName, bio, country } = req.body;
+        const { artistName, bio, country, gender } = req.body;
 
-        const data = await tbl_artist.create({artistName, bio, country});
+        const data = await tbl_artist.create({artistName, bio, country, gender});
         return res.status(200).send({code: 200, message: 'Artist Created Successfully', data: data});
 
     } catch (error) {
