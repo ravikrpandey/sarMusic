@@ -11,6 +11,9 @@ module.exports = (sequelize, Sequelize) => {
       albumName: {
         type: Sequelize.STRING
       },
+      albumCardUrl: {
+        type: Sequelize.STRING
+      },
       artistId: {
         type: Sequelize.INTEGER
       },
@@ -31,6 +34,10 @@ module.exports = (sequelize, Sequelize) => {
       },
       genre: {
         type: Sequelize.STRING
+      },
+      isDeleted: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
       }
     });
     return song;

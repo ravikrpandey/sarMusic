@@ -13,29 +13,87 @@ exports.createArtist = async (req, res) => {
     }
 }
 
-exports.getArtistById = async (req, res) => {
-    try {
-        const id = req.params.id;
-        const getData = await tbl_artist.findOne({where: {
-            artistId: id,
-            isDeleted: false
-        }})
+//=============== geall Artist ===================//
 
-        return res.status(200).send({code: 200, message: 'Artist Fetched Successfully', data: getData});
-
-    } catch (error) {
-        return res.status(500).send({code: 500, message: error.message});
+exports.geAllArtist = async (req , res) => {
+    try{
+        const findArtist = await tbl_artist.findAll({
+            where: {
+                isDeleted: false
+            }
+        });
+        return res.status(200).send({code: 200, message: "All Artist fetched succesfully" , data: findArtist});
+    }catch (error) {
+        console.log("Error", error);
+        return res.status(500).send({code: 500, message: error.message || "Internal server error"});
     }
 }
-exports.getAllArtist = async (req, res) => {
-    try {
-        const getData = await tbl_artist.findAll({where: {
-            isDeleted: false
-        }})
 
-        return res.status(200).send({code: 200, message: 'Artist Fetched Successfully', data: getData});
+//================== get artist by id ================//
 
-    } catch (error) {
-        return res.status(500).send({code: 500, message: error.message});
+exports.getArtistById = async (req , res) => {
+    try{
+        const {id}= req.params;
+
+        const data = await tbl_artist.findOne({
+            where: {
+                artistId: id
+            }
+        })
+        return res.status(200).send({code: 200, message: "All Artist fetched succesfully" , data: data});
+    }catch (error) {
+        console.log("Error", error);
+        return res.status(500).send({code: 500, message: error.message || "Internal server error"});
     }
 }
+
+//================ update Artist =========
+
+exports.updateArtist = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    let data = await tbl_artist.findOne({ where: { artistId: id } });
+    const updatedData = await tbl_artist.update(req.body, {
+      where: { artistId: id },
+      isDeleted: false,
+    });
+    return res
+      .status(200)
+      .send({
+        code: 200,
+        message: "Artist updated succesfully",
+        data: updatedData,
+      });
+  } catch (error) {
+    console.log("Error", error);
+    return res
+      .status(500)
+      .send({ code: 500, message: error.message || "internal server error" });
+  }
+};
+
+//=============== delete Artist ===============//
+
+exports.deleteArtist = async (req, res) => {
+  try {
+    const { id } = req.params;
+    let data = await tbl_artist.findOne({ where: { artistId: id } });
+    const deleteData = await tbl_artist.update(
+      { isDeleted: true },
+      { where: { artistId: id } }
+    );
+    return res
+      .status(200)
+      .send({
+        code: 200,
+        message: "artist is deleted succesfully",
+        data: deleteData,
+      });
+  } catch (error) {
+    console.log("Error", error);
+    return res
+      .status(500)
+      .send({ code: 500, message: error.message || "internal server" });
+  }
+};

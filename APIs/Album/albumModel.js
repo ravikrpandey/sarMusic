@@ -11,7 +11,7 @@
         artistId: {
             type: Sequelize.INTEGER
         },
-        title: {
+        artistName: {
             type: Sequelize.STRING
         },
         releaseDate: {
@@ -22,7 +22,11 @@
         },
         albumCardUrl: {
             type: Sequelize.STRING
-        }
+        },
+        isDeleted: {
+            type: Sequelize.BOOLEAN,
+            defaultValue: false
+          }
         });
         return album;
     }

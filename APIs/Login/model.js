@@ -20,6 +20,10 @@ module.exports = (sequelize, Sequelize) => {
     },
     type: {
       type: Sequelize.STRING
+    },
+    isDeleted: {
+      type: Sequelize.BOOLEAN,
+      defaultValue: false
     }
   });
   return tbl_loginUser

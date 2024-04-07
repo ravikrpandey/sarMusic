@@ -14,9 +14,13 @@ module.exports = (sequelize, Sequelize) => {
         activityType: {
             type: Sequelize.ENUM("PLAY", "PAUSE", "SKIP")
         },
-        activityType: {
-            type: Sequelize.STRING
-        }
+        // activityType: {
+        //     type: Sequelize.STRING
+        // },
+        isDeleted: {
+            type: Sequelize.BOOLEAN,
+            defaultValue: false
+          }
     })
     return userActivity;
 };

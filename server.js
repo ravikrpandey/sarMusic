@@ -68,6 +68,11 @@ app.use(express.static("public"));
 
 require("./APIs/Artist/route")(app);
 require("./APIs/Login/route")(app);
+require("./APIs/Album/albumRoute")(app);
+require("./APIs/Playlist/playlistRoute")(app);
+require('./APIs/PlaylistSong/playlistSongRoute')(app);
+require("./APIs/Song/songRoute")(app);
+
 
 
 //================== Server ==================//

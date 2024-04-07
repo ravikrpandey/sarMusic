@@ -3,7 +3,7 @@ const tbl_loginUser = db.user;
 
 exports.loginUser = async (req, res) => {
     try {
-        const { mobileNumber, otp } = req.body;
+        const { mobileNumber, otp, userName, type} = req.body;
 
         let userData = await tbl_loginUser.findOne({
             where: {
@@ -18,7 +18,7 @@ exports.loginUser = async (req, res) => {
             })
         } else {
             await tbl_loginUser.create({
-                mobileNumber,
+                mobileNumber, userName, type,
                 otp: "1234"
             });
         }
