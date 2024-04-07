@@ -1,5 +1,6 @@
 const db = require("../../IndexFiles/modelsIndex")
 const tbl_song = db.song;
+const tbl_album = db.album
 
 //=============== create song  ======//
 
@@ -34,7 +35,7 @@ exports.getAllSong = async (req, res) => {
 
 exports.getSongById = async (req, res) => {
     try{
-        const{id}= req.body;
+        const{id}= req.params;
         const getData = await tbl_song.findOne({
             where: {
                 songId: id 
@@ -99,6 +100,26 @@ exports.deleteSong = async (req, res) => {
         }else {
             return res.status(422).send({code: 422, message: "invalid data"});
         }
+    }catch (error){
+        return res.status(500).send({code: 500, message: error.message || "internal server error"});
+    }
+}
+
+//================ getSonsByAlbumId ===========//
+
+exports.getSongsByAlbumId = async (req, res) => {
+    try{
+        const{albumId}= req.params;
+        const data = await tbl_song.findOne({
+            where: {
+                albumId: albumId
+            },
+            include: {
+                model: tbl_album
+                // attributes: []
+            }
+        })
+        return res.status(200).send({code: 200, message: "song is fetched by album id", data:data})
     }catch (error){
         return res.status(500).send({code: 500, message: error.message || "internal server error"});
     }
