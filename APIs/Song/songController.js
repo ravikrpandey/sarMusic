@@ -34,14 +34,72 @@ exports.getAllSong = async (req, res) => {
 
 exports.getSongById = async (req, res) => {
     try{
-        const{songId}= req.body;
+        const{id}= req.body;
         const getData = await tbl_song.findOne({
             where: {
-                songId: songId
+                songId: id 
             }
         })
         return res.status(200).send({code: 200, message: "song fetched succesfully", data:getData})
     }catch (error){
         return res.status(500).send({code: 500, message: error.message || "internal server error"})
+    }
+}
+
+//================= update song ==========//
+
+exports.updateSong = async (req, res) => {
+    try{
+        const {id}= req.params;
+        const {albumId, albumName,  artistId, artistName, songTitle, duration, songUrl, releaseDate, genre}= req.body;
+
+        const data = await tbl_song.findOne({
+            where: {
+                songId: id
+            }
+        })
+        if(data){
+            const editData = await tbl_song.update({
+                albumId, albumName,  artistId, artistName, songTitle, duration, songUrl, releaseDate, genre
+            },
+            {
+                where: {
+                    songId: id
+                }
+            })
+            return res.status(200).send({code: 200, message: "song updated succesfully",data: editData});
+        }else {
+            return res.status(422).send({code: 422, message: "invalid data"});
+        }
+    }catch (error){
+        return res.status(500).send({code: 500, message: error.message || "internal server error"});
+    }
+}
+
+//============ delete ==========//
+
+exports.deleteSong = async (req, res) => {
+    try{
+        const{id}= req.params;
+        const data = await tbl_song.findOne({
+            where: {
+                songId: id
+            }
+        })
+        if(data){
+            const updateData = await tbl_song.update({
+                isDeleted: true
+            },
+            {
+                where: {
+                    songId: id
+                }
+            })
+            return res.status(200).send({code: 200, message: "song updated succesfully",data: updateData});
+        }else {
+            return res.status(422).send({code: 422, message: "invalid data"});
+        }
+    }catch (error){
+        return res.status(500).send({code: 500, message: error.message || "internal server error"});
     }
 }
