@@ -31,6 +31,10 @@ module.exports = (sequelize, Sequelize) => {
       },
       genre: {
         type: Sequelize.STRING
+      },
+      isDeleted: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
       }
     });
     return song;

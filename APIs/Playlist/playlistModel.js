@@ -5,10 +5,17 @@ module.exports = (sequelize, Sequelize) => {
             autoIncrement: true,
             primaryKey: true
         },
+        playlistName:{
+            type:Sequelize.STRING
+        },
         userId: {
             type: Sequelize.INTEGER
-        }
-
+        },
+        
+        isDeleted: {
+            type: Sequelize.BOOLEAN,
+            defaultValue: false
+          }
     })
     return playlist;
 }
