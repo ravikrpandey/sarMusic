@@ -1,6 +1,11 @@
 const db = require("../../IndexFiles/modelsIndex")
+const Sequelize = require('sequelize');
 const tbl_song = db.song;
-const tbl_album = db.album
+const tbl_album = db.album;
+const tbl_artist = db.artist;
+const tbl_playlist = db.playlist;
+const tbl_songPlayList = db.playlistSong;
+const tbl_loginUser = db.user;
 
 //=============== create song  ======//
 
@@ -124,3 +129,60 @@ exports.getSongsByAlbumId = async (req, res) => {
         return res.status(500).send({code: 500, message: error.message || "internal server error"});
     }
 }
+
+//======= getAll song count ==========//
+
+exports.getAllDashboardCount = async (req, res) => {
+  try {
+    const songCount = await tbl_song.count({
+      where: {
+        isDeleted: false,
+      },
+    });
+    const artistCount = await tbl_artist.count({
+      where: {
+        isDeleted: false,
+      },
+    });
+    const playlistCount = await tbl_playlist.count({
+      where: {
+        isDeleted: false,
+      },
+    });
+    const albumCount = await tbl_album.count({
+      where: {
+        isDeleted: false,
+      },
+    });
+    const playlistSongCount = await tbl_songPlayList.count({
+      where: {
+        isDeleted: false,
+      },
+    });
+    const uniqueUser = await tbl_loginUser.count({
+        distinct: true,
+        col: 'mobileNumber',
+        where: {
+            mobileNumber: {
+                [Sequelize.Op.ne]: null 
+            }
+        }
+    });
+    return res
+      .status(200)
+      .send({
+        code: 200,
+        message: "All Dashboard count is fetched succesfully",
+        songCount: songCount,
+        artistCount: artistCount,
+        playlistCount: playlistCount,
+        albumCount: albumCount,
+        playlistSongCount: playlistSongCount,
+        uniqueUser: uniqueUser,
+      });
+  } catch (error) {
+    return res
+      .status(500)
+      .send({ code: 500, message: error.message || "internal server error" });
+  }
+};
