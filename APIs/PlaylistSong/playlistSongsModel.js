@@ -5,13 +5,13 @@ module.exports = (sequelize, Sequelize) => {
             autoIncrement: true,
             primaryKey: true
         },
-        songPlaylistName: {
+        playlistName: {
             type: Sequelize.STRING
         },
         playlistId: {
             type: Sequelize.INTEGER
         },
-        userId: {
+        songId: {
             type: Sequelize.INTEGER
         },
         isDeleted: {
