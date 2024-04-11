@@ -1,5 +1,6 @@
 const db = require("../../IndexFiles/modelsIndex")
 const Sequelize = require('sequelize');
+const { Op } = require('sequelize');
 const tbl_song = db.song;
 const tbl_album = db.album;
 const tbl_artist = db.artist;
@@ -133,56 +134,104 @@ exports.getSongsByAlbumId = async (req, res) => {
 //======= getAll song count ==========//
 
 exports.getAllDashboardCount = async (req, res) => {
-  try {
-    const songCount = await tbl_song.count({
-      where: {
-        isDeleted: false,
-      },
-    });
-    const artistCount = await tbl_artist.count({
-      where: {
-        isDeleted: false,
-      },
-    });
-    const playlistCount = await tbl_playlist.count({
-      where: {
-        isDeleted: false,
-      },
-    });
-    const albumCount = await tbl_album.count({
-      where: {
-        isDeleted: false,
-      },
-    });
-    const playlistSongCount = await tbl_songPlayList.count({
-      where: {
-        isDeleted: false,
-      },
-    });
-    const uniqueUser = await tbl_loginUser.count({
+    try {
+      const { startDate, endDate } = req.body;
+  
+      const start = startDate ? new Date(startDate) : new Date();
+      let end = endDate ? new Date(endDate) : new Date();
+  
+      if (end < start) {
+        return res.status(400).send({ code: 400, message: "End date cannot be before start date" });
+      }
+  
+      //####### Adjust end date to include the full day if it's the same as the start date ########//
+      end = new Date(end.getTime() + (24 * 60 * 60 * 1000) - 1);
+  
+      //############ Get the counts for each entity within the specified date range ############//
+      const songCountInRange = await tbl_song.count({
+        where: {
+          isDeleted: false,
+          createdAt: {
+            [Op.between]: [start, end],
+          }
+        }
+      });
+  
+      const artistCountInRange = await tbl_artist.count({
+        where: {
+          isDeleted: false,
+          createdAt: {
+              [Op.between]: [start, end],
+            }
+        },
+      });
+  
+      const playlistCountInRange = await tbl_playlist.count({
+        where: {
+          isDeleted: false,
+          createdAt: {
+              [Op.between]: [start, end],
+            }
+        },
+      });
+  
+      const albumCountInRange = await tbl_album.count({
+        where: {
+          isDeleted: false,
+          createdAt: {
+              [Op.between]: [start, end],
+            }
+        },
+      });
+  
+      const playlistSongCountInRange = await tbl_songPlayList.count({
+        where: {
+          isDeleted: false,
+          createdAt: {
+              [Op.between]: [start, end],
+            }
+        },
+      });
+  
+      const uniqueUserInRange = await tbl_loginUser.count({
         distinct: true,
         col: 'mobileNumber',
         where: {
-            mobileNumber: {
-                [Sequelize.Op.ne]: null 
+          mobileNumber: {
+            [Op.ne]: null
+          },
+          createdAt: {
+              [Op.between]: [start, end],
             }
         }
-    });
-    return res
-      .status(200)
-      .send({
-        code: 200,
-        message: "All Dashboard count is fetched succesfully",
-        songCount: songCount,
-        artistCount: artistCount,
-        playlistCount: playlistCount,
-        albumCount: albumCount,
-        playlistSongCount: playlistSongCount,
-        uniqueUser: uniqueUser,
       });
-  } catch (error) {
-    return res
-      .status(500)
-      .send({ code: 500, message: error.message || "internal server error" });
-  }
-};
+  
+      const totalSongCount = await tbl_song.count({ where: { isDeleted: false } });
+      const totalArtistCount = await tbl_artist.count({ where: { isDeleted: false } });
+      const totalPlaylistCount = await tbl_playlist.count({ where: { isDeleted: false } });
+      const totalAlbumCount = await tbl_album.count({ where: { isDeleted: false } });
+      const totalPlaylistSongCount = await tbl_songPlayList.count({ where: { isDeleted: false } });
+      const totalUniqueUser = await tbl_loginUser.count({ distinct: true, col: 'mobileNumber', where: { mobileNumber: { [Op.ne]: null } } });
+  
+      return res.status(200).send({
+        code: 200,
+        message: "All Dashboard count is fetched successfully",
+        songCountInRange: songCountInRange,
+        artistCountInRange: artistCountInRange,
+        playlistCountInRange: playlistCountInRange,
+        albumCountInRange: albumCountInRange,
+        playlistSongCountInRange: playlistSongCountInRange,
+        uniqueUserInRange: uniqueUserInRange,
+        totalSongCount: totalSongCount,
+        totalArtistCount: totalArtistCount,
+        totalPlaylistCount: totalPlaylistCount,
+        totalAlbumCount: totalAlbumCount,
+        totalPlaylistSongCount: totalPlaylistSongCount,
+        totalUniqueUser: totalUniqueUser
+      });
+    } catch (error) {
+      return res.status(500).send({ code: 500, message: error.message || "internal server error" });
+    }
+  };
+  
+  
