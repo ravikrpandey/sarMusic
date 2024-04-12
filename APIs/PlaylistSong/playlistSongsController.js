@@ -6,12 +6,12 @@ const tbl_playlist = db.playlist
 
 exports.createsongPlayList = async (req, res) => {
     try{
-        const {songPlaylistName, playlistId, userId}= req.body;
-
+        const {playlistName, playlistId, songId}= req.body;
+        
         const data = await tbl_songPlayList.create({
-            songPlaylistName, playlistId, userId
+            playlistName, playlistId, songId
         });
-        return res.status(200).send({code: 200, message: "songPlaylist created succesfully", data: data});
+        return res.status(200).send({code: 200, message: `Song Added To ${playlistName} Playlist`, data: data});
     }catch (error){
         return res.status(500).send({code: 500, message: error.message || "internal server error"});
     }

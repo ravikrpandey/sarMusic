@@ -11,6 +11,10 @@ module.exports = (sequelize, Sequelize) => {
         userId: {
             type: Sequelize.INTEGER
         },
+
+        description: {
+            type: Sequelize.STRING
+        },
         
         isDeleted: {
             type: Sequelize.BOOLEAN,
