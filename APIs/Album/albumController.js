@@ -5,9 +5,9 @@ const tbl_album = db.album;
 
 exports.createAlbum = async (req , res) => {
     try{
-    const {albumName, artistId, title, releaseDate, genre, albumCardUrl} = req.body;
+    const {albumName, artistId, artistName, releaseDate, genre, albumCardUrl} = req.body;
 
-    const data = await tbl_album.create({albumName, artistId, title, releaseDate, genre, albumCardUrl});
+    const data = await tbl_album.create({albumName, artistId, artistName, releaseDate, genre, albumCardUrl});
     return res.status(200).send({code: 200, message: 'Album Created Successfully', data: data});
 } catch (error) {
     return res.status(500).send({code: 500, message: error.message});
@@ -18,8 +18,11 @@ exports.createAlbum = async (req , res) => {
 
 exports.getAllAlbum = async (req , res) => {
     try{
-
-        const findAlbum = await tbl_album.findAll({ })
+        const findAlbum = await tbl_album.findAll({ 
+            where: {
+                isDeleted: false
+            }
+        })
         return res.status(200).send({code: 200, message: "All Album fetched succesfully" , data: findAlbum});
 
     }catch (error){

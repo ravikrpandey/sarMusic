@@ -8,4 +8,6 @@ app.get("/api/getSongsByAlbumId/:albumId", songRoute.getSongsByAlbumId);
 app.post("/api/getAllDashboardCount", songRoute.getAllDashboardCount);
 app.put("/api/updateSong/:id", songRoute.updateSong);
 app.delete("/api/deleteSong/:id", songRoute.deleteSong);
+app.get("/api/getSongUrlByYoutubeLink", songRoute.getSongUrlByYoutubeLink);
+app.get("/api/getSongsPlayListById/:userId/:playlistId", songRoute.getSongsPlayListById);
 }

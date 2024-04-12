@@ -11,6 +11,9 @@ module.exports = (sequelize, Sequelize) => {
       albumName: {
         type: Sequelize.STRING
       },
+      albumCardUrl: {
+        type: Sequelize.STRING
+      },
       artistId: {
         type: Sequelize.INTEGER
       },

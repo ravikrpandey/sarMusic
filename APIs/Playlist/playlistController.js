@@ -4,8 +4,8 @@ const tbl_loginUser = db.user;
 
 exports.createPlaylist = async (req,res)=>{
     try {
-       const {playlistName,userId}= req.body
-       const data = await tbl_playlist.create({playlistName,userId});
+       const {playlistName, userId, description}= req.body
+       const data = await tbl_playlist.create({playlistName,userId, description});
        return res.status(200).send({code:200,message:'PlayList Created Successfully',data:data})
     }catch (error){
     return res.status(500).send({code: 500, message: error.message || "Internal server error"});

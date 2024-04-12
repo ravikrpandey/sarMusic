@@ -11,7 +11,7 @@
         artistId: {
             type: Sequelize.INTEGER
         },
-        title: {
+        artistName: {
             type: Sequelize.STRING
         },
         releaseDate: {
