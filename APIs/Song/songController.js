@@ -40,7 +40,8 @@ exports.getSongById = async (req, res) => {
         const{id}= req.params;
         const getData = await tbl_song.findOne({
             where: {
-                songId: id 
+                songId: id,
+                isDeleted: false
             }
         })
         return res.status(200).send({ code: 200, message: "song fetched succesfully", data: getData })
@@ -70,7 +71,7 @@ exports.updateSong = async (req, res) => {
                     songId: id
                 }
             })
-            return res.status(200).send({code: 200, message: "song updated succesfully",data: editData});
+            return res.status(200).send({code: 200, message: "Song updated succesfully",data: editData});
         }else {
             return res.status(422).send({code: 422, message: "invalid data"});
         }
