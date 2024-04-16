@@ -54,6 +54,9 @@ exports.updateArtist = async (req, res) => {
     const { id } = req.params;
 
     let data = await tbl_artist.findOne({ where: { artistId: id } });
+    if (!data) {
+      return res.status(404).send({code: 200, message: "Artist Not Found"})
+    }
     const updatedData = await tbl_artist.update(req.body, {
       where: { artistId: id },
       isDeleted: false,
@@ -79,6 +82,9 @@ exports.deleteArtist = async (req, res) => {
   try {
     const { id } = req.params;
     let data = await tbl_artist.findOne({ where: { artistId: id } });
+    if (!data) {
+      return res.status(404).send({code: 200, message: "No Artist available to delete"})
+    }
     const deleteData = await tbl_artist.update(
       { isDeleted: true },
       { where: { artistId: id } }
@@ -87,7 +93,7 @@ exports.deleteArtist = async (req, res) => {
       .status(200)
       .send({
         code: 200,
-        message: "artist is deleted succesfully",
+        message: "Artist is deleted succesfully",
         data: deleteData,
       });
   } catch (error) {

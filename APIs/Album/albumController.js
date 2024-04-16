@@ -39,7 +39,8 @@ exports.getAlbumById = async (req, res) => {
 
         const album = await tbl_album.findOne({
             where: {
-                albumId: albumId
+                albumId: albumId,
+                isDeleted: false
             }
         })
         return res.status(200).send({code: 200, message: "All Album fetched succesfully" , data: album});
@@ -56,6 +57,9 @@ exports.updateAlbum = async (req , res) => {
         const { albumId } = req.params;
     
         let data = await tbl_album.findOne({ where: { albumId: albumId } });
+        if (!data) {
+            return res.status(404).send({code: 200, message: "Album not found"})
+        }
         const updatedData = await tbl_album.update(req.body, {
           where: { albumId: albumId },
           isDeleted: false,
@@ -81,6 +85,9 @@ exports.deleteAlbum = async (req, res) => {
     try {
         const { albumId } = req.params;
         let data = await tbl_album.findOne({ where: { albumId: albumId } });
+        if (!data) {
+            return res.status(404).send({code: 200, message: "No album to delete"})
+        };
         const deleteData = await tbl_album.update(
           { isDeleted: true },
           { where: { albumId: albumId } }
@@ -89,7 +96,7 @@ exports.deleteAlbum = async (req, res) => {
           .status(200)
           .send({
             code: 200,
-            message: "Album is deleted succesfully",
+            message: "Album deleted succesfully",
             data: deleteData,
           });
       } catch (error) {

@@ -1,3 +1,4 @@
+const { where } = require("sequelize");
 const db = require("../../IndexFiles/modelsIndex");
 const tbl_songPlayList = db.playlistSong;
 const tbl_playlist = db.playlist
@@ -6,10 +7,40 @@ const tbl_playlist = db.playlist
 
 exports.createsongPlayList = async (req, res) => {
     try{
-        const {playlistName, playlistId, songId}= req.body;
+        const {playlistName, playlistId, songId, liked, mobileNumber}= req.body;
+
+        let userId = await db.user.findOne({
+            where:{
+                mobileNumber
+            }
+        })
+        userId = userId.userId
+        let checkSongId = await tbl_songPlayList.findOne({where:{
+            playlistId,
+            playlistName,
+            songId,
+            userId
+        }});
+
+        if (checkSongId && liked === true) {
+            tbl_songPlayList.update({isDeleted: false}, {where: {
+                userId: checkSongId.userId,
+                songId: songId
+            }})
+
+            return res.status(200).send({code: 200, message: `Added To ${playlistName} Playlist`});
+
+        } else if (checkSongId && liked === false) {
+            tbl_songPlayList.update({isDeleted: true}, {where: {
+                userId: checkSongId.userId,
+                songId: songId
+            }})
+
+            return res.status(200).send({code: 200, message: `Removed From ${playlistName} Playlist`});
+        }
         
         const data = await tbl_songPlayList.create({
-            playlistName, playlistId, songId
+            playlistName, playlistId, songId, userId
         });
         return res.status(200).send({code: 200, message: `Song Added To ${playlistName} Playlist`, data: data});
     }catch (error){
