@@ -29,6 +29,10 @@ module.exports = (sequelize, Sequelize) => {
       songUrl: {
         type: Sequelize.STRING
       },
+      songCardUrl: {
+        type: Sequelize.STRING,
+        defaultValue: ''
+      },
       releaseDate: {
         type: Sequelize.STRING
       },

@@ -72,12 +72,13 @@ require("./APIs/Album/albumRoute")(app);
 require("./APIs/Playlist/playlistRoute")(app);
 require('./APIs/PlaylistSong/playlistSongRoute')(app);
 require("./APIs/Song/songRoute")(app);
+require("./APIs/UserActivity/userActivityRoute")(app)
 
 
 
 //================== Server ==================//
 
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
