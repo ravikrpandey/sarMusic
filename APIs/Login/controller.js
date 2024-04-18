@@ -30,7 +30,7 @@ exports.loginUser = async (req, res) => {
         if (otp == userData?.otp) {
             // await db.sequelize.query(`UPDATE user SET lastLogin = CURRENT_TIMESTAMP WHERE mobileNumber = '${mobileNumber}';
             // `)
-            return res.status(200).send({ code: 200, message: "user login succesfully" });
+            return res.status(200).send({ code: 200, message: "user login succesfully", data:  userData.type});
         } else {
             return res.status(403).send({ code: 403, message: "please enter valid otp" });
         }
