@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js"
- },
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -19,6 +19,7 @@
     "mysql2": "^3.9.2",
     "nodemon": "^3.1.0",
     "package": "^1.0.1",
+    "pg": "^8.11.5",
     "sequelize": "^6.37.1",
     "ytdl-core": "^4.11.5"
   }
