@@ -5,8 +5,12 @@ exports.createArtist = async (req, res) => {
     try {
         const { artistName, bio, gender, artistProfileUrl,  } = req.body;
 
-        const data = await tbl_artist.create({artistName, bio, gender, artistProfileUrl});
-        return res.status(200).send({code: 200, message: 'Artist Created Successfully', data: data});
+        // const data = await tbl_artist.create({artistName, bio, gender, artistProfileUrl});
+        // return res.status(200).send({code: 200, message: 'Artist Created Successfully', data: data});
+
+        for(let i=10; i>=1; i--){
+          console.log(i);
+        }
 
     } catch (error) {
         return res.status(500).send({code: 500, message: error.message});
