@@ -8,16 +8,19 @@ const sequelize = new Sequelize(
   dialect: config.dialect,
   operatorsAliases: false,
 
-  pool: {
-    max: config.pool.max,
-    min: config.pool.min,
-    acquire: config.pool.acquire,
-    idle: config.pool.idle
-  }
+  // pool: {
+  //   max: config.pool.max,
+  //   min: config.pool.min,
+  //   acquire: config.pool.acquire,
+  //   idle: config.pool.idle
+  // }
 });
-const db = {};
+const db = {};                                                                                                                
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
+
+// const { Sequelize } = require('sequelize');
+const sequelize1 = new Sequelize('postgres://sarmusic_owner:AnqmH1fBt4as.com:ep-crimson-rice-a50d5owg.us-east-2.aws.neon.tech/sarmusic');
 
 
 //=============== all model declaearations ===============

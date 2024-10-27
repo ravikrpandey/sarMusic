@@ -309,3 +309,19 @@ exports.getSongsPlayListById = async (req, res) => {
       return res.status(500).send({ code: 500, message: error.message || "internal server error" });
     }
 }
+
+//================= getArtistNameById ===============//
+
+exports.getArtistNameById = async (req, res) =>{
+  try{
+    const{songId}= req.body;
+    const data = await db.song.findAll({
+      where: {
+        songId: songId
+      }
+    })
+    return res.status(200).send({code: 200, message: "fetched succesfully", data: data});
+  }catch (error) {
+      return res.status(500).send({ code: 500, message: error.message || "internal server error" });
+    }
+}
