@@ -78,30 +78,49 @@ exports.getSongById = async (req, res) => {
 exports.updateSong = async (req, res) => {
     try {
         const { id } = req.params;
-        const { albumId, albumName, artistId, artistName, songTitle, duration, songUrl, releaseDate, genre } = req.body;
+        const { albumId, albumName, artistId, artistName, songTitle, duration, songUrl, songFile, releaseDate, genre } = req.body;
 
-        const data = await tbl_song.findOne({
+        const song = await tbl_song.findOne({
             where: {
                 songId: id
             }
-        })
-        if (data) {
-            const editData = await tbl_song.update({
-                albumId, albumName, artistId, artistName, songTitle, duration, songUrl, releaseDate, genre
-            },
-                {
-                    where: {
-                        songId: id
-                    }
-                })
-            return res.status(200).send({ code: 200, message: "Song updated succesfully", data: editData });
-        } else {
-            return res.status(422).send({ code: 422, message: "invalid data" });
+        });
+
+        if (!song) {
+            return res.status(422).send({ code: 422, message: "Invalid data" });
         }
+
+        let filePath = songUrl;
+
+        if (songFile) {
+            filePath = await saveFileAndGetNameByBase64(songFile, songTitle);
+        }
+
+        const updatedSong = await tbl_song.update(
+            {
+                albumId,
+                albumName,
+                artistId,
+                artistName,
+                songTitle,
+                duration,
+                songUrl: filePath,
+                releaseDate,
+                genre
+            },
+            {
+                where: {
+                    songId: id
+                }
+            }
+        );
+
+        return res.status(200).send({ code: 200, message: "Song updated successfully", data: updatedSong });
     } catch (error) {
-        return res.status(500).send({ code: 500, message: error.message || "internal server error" });
+        return res.status(500).send({ code: 500, message: error.message || "Internal server error" });
     }
-}
+};
+
 
 //============ delete ==========//
 
@@ -122,7 +141,7 @@ exports.deleteSong = async (req, res) => {
                         songId: id
                     }
                 })
-            return res.status(200).send({ code: 200, message: "song updated succesfully", data: updateData });
+                return res.status(200).send({ code: 200, message: "Soft delete completed successfully", data: updateData });
         } else {
             return res.status(422).send({ code: 422, message: "invalid data" });
         }
