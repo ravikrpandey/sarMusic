@@ -17,7 +17,6 @@ const sequelize = new Sequelize(
 });
 
 // For Pg configuration with neon free db connections 
-
 // const sequelize = new Sequelize('postgresql://sarmusic_owner:AnqmH1fBt4as@ep-crimson-rice-a50d5owg.us-east-2.aws.neon.tech/sarmusic?sslmode=require')
 // console.log('db Connected');
 

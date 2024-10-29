@@ -10,8 +10,8 @@ global.__basedir = __dirname;
 dotenv.config();
 
 const app = express();
-app.use(bodyParser.json({ limit: "50mb" }));
-app.use(bodyParser.urlencoded({ extended: true, limit: "50mb" }));
+app.use(bodyParser.json({ limit: "1000mb" }));
+app.use(bodyParser.urlencoded({ extended: true, limit: "1000mb" }));
 
 app.use(express.json());
 app.use(bodyParser.json());
@@ -58,6 +58,10 @@ db.sequelize
 app.get("/", (req, res) => {
   res.json({ message: "Welcome to the SARMUSIC Back-End!" });
 });
+
+// Serve static files from the uploaded-local-files directory
+app.use('/uploaded-local-files', express.static(path.join(__dirname, '/APIs/services/upload-files/uploaded-local-files')));
+
 
 //===================== Serve static files ========================//
 

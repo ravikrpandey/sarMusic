@@ -20,8 +20,29 @@
 
 // console.log("Welcome")
 
+// module.exports = {
+//   HOST: "sql10.freesqldatabase.com",
+//   USER: "sql10698908",
+//   PASSWORD: "ze1QSKnUew",
+//   DB: "sql10698908",
+//   dialect: "mysql",
+//   logging: false,
+//   camelCase: true, 
+//   additional: {
+//       timestamps: false
+//   },
+
+//   pool: {
+//     max: 5,
+//     min: 0,
+//     acquire: 30000,
+//     idle: 10000
+//   }
+// };
+
+
 module.exports = {
-  HOST: "65.2.131.42",
+  HOST: "13.201.24.58",
   USER: "ravi",
   PASSWORD: "root",
   DB: "ravi",
@@ -29,13 +50,13 @@ module.exports = {
   logging: false,
   camelCase: true, 
   additional: {
-      timestamps: false
+  timestamps: false
   },
-
+  
   pool: {
-    max: 5,
-    min: 0,
-    acquire: 30000,
-    idle: 10000
-  }
-};
+  max: 5,
+  min: 0,
+  acquire: 30000,
+  idle: 10000
+    }
+  };
