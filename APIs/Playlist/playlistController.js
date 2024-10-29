@@ -107,3 +107,46 @@ exports.deletePlaylist = async (req, res) => {
         return res.status(500).send({code: 500, message: error.message || "Internal server error"});
     }
 }
+
+//================= getAllDashboardcount ================//
+
+exports.getAllDashBoardCount = async (req, res) => {
+  try {
+    const TotalArtist = await db.song.count({
+      where: {
+        isDeleted: false,
+      },
+    });
+    const TotalAlbums = await db.album.count({
+      status: "ACTIVE",
+      isDeleted: false,
+    });
+    const TotalSongs = await db.song.count({
+      status: "ACTIVE",
+      isDeleted: false,
+    });
+    const TotalPlaylist = await db.playlist.count({
+      status: "ACTIVE",
+      isDeleted: false,
+    });
+    const TotalActiveUser = await db.user.count({
+      status: "ACTIVE",
+      isDeleted: false,
+    });
+    return res
+      .status(200)
+      .send({
+        code: 200,
+        message: "dashboar count is fetched is fetched succesfully",
+        TotalArtist: TotalArtist,
+        TotalAlbums: TotalAlbums,
+        TotalSongs: TotalSongs,
+        TotalPlaylist: TotalPlaylist,
+        TotalActiveUser: TotalActiveUser,
+      });
+  } catch (error) {
+    return res
+      .status(500)
+      .send({ code: 500, message: error.message || "Internal server error" });
+  }
+};
