@@ -2,9 +2,9 @@
 node_modules/
 npm-debug.log
 yarn-error.log
-# config/
-# config/db.config.js
-# .env
+config/
+config/db.config.js
+.env
 
 # Dependency directories
 # /node_modules

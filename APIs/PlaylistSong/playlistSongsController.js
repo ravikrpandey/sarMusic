@@ -173,11 +173,6 @@ exports.updateSongPlayedCount = async (req, res) => {
                 playlistName: 'MostPlayed'
          }
       });
-      const playlist = await db.playlist.findOne({
-        where: {userId: userId.userId,
-                playlistName: 'MostPlayed'
-         }
-      });
 
       const currentPlayedCount = song?.playedCount || 0;
       if (song) {
@@ -187,8 +182,18 @@ exports.updateSongPlayedCount = async (req, res) => {
         );
         return res.status(200).send({ code: 200, message: "Count updated successfully", data: updatedSong });
       } else {
+        await db.playlist.create(
+          { playlistName: 'MostPlayed', userId: userId.userId, description:"its a most played playlist"}
+        );
+
+        const playlistRecord = await db.playlist.findOne({
+          where: {userId: userId.userId,
+                  playlistName: 'MostPlayed'
+           }
+        });
+
         await db.playlistSong.create(
-          { playedCount: currentPlayedCount + 1, playlistName: 'MostPlayed', songId: songId, userId: userId.userId, playlistId:playlist.playlistId}
+          { playedCount: currentPlayedCount + 1, playlistName: 'MostPlayed', songId: songId, userId: userId.userId, playlistId:playlistRecord.playlistId}
         );
 
         return res.status(200).send({ code: 200, message: "Count updated successfully"})
@@ -258,7 +263,7 @@ exports.updateSongPlayedCount = async (req, res) => {
       }
 
       let mostPlayed = songData
-      .filter(item => item.playlistId === 2)
+      .filter(item => item.playlistName === 'MostPlayed')
     
   
       return res.status(200).send({

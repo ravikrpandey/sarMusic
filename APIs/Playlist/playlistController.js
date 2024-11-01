@@ -112,7 +112,7 @@ exports.deletePlaylist = async (req, res) => {
 
 exports.getAllDashBoardCount = async (req, res) => {
     try {
-        const TotalArtist = await db.song.count({
+        const TotalArtist = await db.artist.count({
             where: {
                 isDeleted: false,
             },
