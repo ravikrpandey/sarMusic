@@ -2,6 +2,8 @@ const { where } = require("sequelize");
 const db = require("../../IndexFiles/modelsIndex");
 const tbl_songPlayList = db.playlistSong;
 const tbl_playlist = db.playlist
+const { Op } = require('sequelize');
+
 
 //=========== create songplaylist =========//
 
@@ -158,22 +160,38 @@ exports.deleteSongPlayList= async (req , res) =>{
 
 exports.updateSongPlayedCount = async (req, res) => {
     try {
-      const { songId, userId} = req.body;
+      let { songId, mobileNumber} = req.params;
+      const userId = await db.user.findOne({
+        where: { mobileNumber: mobileNumber
+         },
+         attributes: ["userId"]
+      });
       
       const song = await db.playlistSong.findOne({
         where: { songId: songId,
-                userId: userId
+                userId: userId.userId,
+                playlistName: 'MostPlayed'
          }
       });
+      const playlist = await db.playlist.findOne({
+        where: {userId: userId.userId,
+                playlistName: 'MostPlayed'
+         }
+      });
+
+      const currentPlayedCount = song?.playedCount || 0;
       if (song) {
-        const currentPlayedCount = song.playedCount || 0;
         const updatedSong = await db.playlistSong.update(
           { playedCount: currentPlayedCount + 1 }, 
-          { where: { songId: songId, userId: userId } }
+          { where: { songId: songId, userId: userId.userId, playlistName: 'MostPlayed' } }
         );
         return res.status(200).send({ code: 200, message: "Count updated successfully", data: updatedSong });
       } else {
-        return res.status(404).send({ code: 404, message: "Song ID not found" });
+        await db.playlistSong.create(
+          { playedCount: currentPlayedCount + 1, playlistName: 'MostPlayed', songId: songId, userId: userId.userId, playlistId:playlist.playlistId}
+        );
+
+        return res.status(200).send({ code: 200, message: "Count updated successfully"})
       }
     } catch (error) {
       console.error('Error:', error.message);
@@ -181,43 +199,79 @@ exports.updateSongPlayedCount = async (req, res) => {
     }
   }
   
-  //==================== getUpdatedPlayedCount ==================//
-  exports.getUpdatedPlayedCount = async (req, res) => {
+  //==================== getUsersPlaylist ==================//
+  exports.getUsersPlaylist = async (req, res) => {
     try {
-      const { userId } = req.params;
+      let { userId, mobileNumber } = req.params;
+
+      const userData = await db.user.findOne({
+        where: { mobileNumber: mobileNumber },
+        attributes: ['userId']
+      });
+      
+      if (!userData) {
+        return res.status(404).send({ code: 404, message: "User not found." });
+      }
+      
+      userId = userData.userId;
+  
       const playlists = await db.playlist.findAll({
-        where: { userId: userId },
+        where: { userId: userId }
       });
-      if (!playlists) {
-        return res
-          .status(404)
-          .send({ code: 404, message: "No playlists found." });
+      
+      if (!playlists.length) {
+        return res.status(404).send({ code: 404, message: "No playlists found." });
       }
-      let songData = [];
-      for(let i= 0; i < playlists.length; i++){
-      const findData = await db.playlistSong.findAll({
-        where: { playlistId: playlists[i].playlistId },
-      });
-      songData.push(findData);
-    }
-      for (let i = 0; i < songData.length; i++) {
-        const findSong = await db.song.findOne({
-          where: { songId: songData[i].songId },
+
+      const songData = [];
+  
+      for (const playlist of playlists) {
+        const playlistSongs = await db.playlistSong.findAll({
+          where: {
+            playlistId: playlist.playlistId,
+            [Op.or]: [
+              { playedCount: { [Op.gte]: 3 } },
+              { like: 'Liked' }
+            ]
+          }
         });
-        if (findSong) {
-          findData[i].dataValues.songUrl = findSong.songUrl;
-        }
+
+        const songsWithUrls = await Promise.all(
+          playlistSongs.map(async (playlistSong) => {
+            const song = await db.song.findOne({
+              where: { songId: playlistSong.songId },
+              attributes: ['songId', 'songUrl', 'songCardUrl', 'albumCardUrl', 'songTitle', 'artistName' ]
+            });
+
+            let songTitle = song.songTitle.length > 15 ? song.songTitle.substring(0, 24) : song.songTitle;
+
+            
+            return song ? { ...playlistSong.dataValues, songUrl: song.songUrl, songCardUrl: song.songCardUrl, albumCardUrl: song.albumCardUrl, songTitle:songTitle, artistName:song.artistName } : null;
+          })
+        );
+
+        songData.push({
+          playlistId: playlist.playlistId,
+          playlistName: playlist.playlistName,
+          songs: songsWithUrls.filter(Boolean)
+        });
       }
+
+      let mostPlayed = songData
+      .filter(item => item.playlistId === 2)
+    
+  
       return res.status(200).send({
         code: 200,
-        message: "Song played count is fetched successfully",
-        data: findData,
+        message: "Playlist and song data fetched successfully",
+        data: songData, mostPlayed
       });
     } catch (error) {
       console.error("Error:", error.message);
       res.status(500).json({ code: 500, message: "Server error" });
     }
   };
+  
   
   
   //======================== api for get all updated played count ================//
